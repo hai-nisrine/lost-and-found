@@ -15,12 +15,23 @@
             <form id="login-form">
                 <div class="form-group">
                     <label for="email-el">Email address</label>
-                    <input type="email" id="email-el" name="email" class="form-input" placeholder="j.doe@aui.ma" required>
+                    <input type="email" 
+                    id="email-el" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="j.doe@aui.ma" 
+                    required>
                 </div>
 
                 <div class="form-group">
                     <label for="password-el">Password</label>
-                    <input type="password" id="password-el" name="password" class="form-input" required>
+                    <input type="password" 
+                    id="password-el" 
+                    name="password" 
+                    class="form-input" 
+                    required minlength="8"
+                    pattern="(?=.*[A-Z])(?=.*[!@#$%^&*(),.?&quot;:{}|<>]).{8,}"
+                    title="Must be at least 8 characters, include one uppercase letter and one symbol">
 
                 </div>
 
