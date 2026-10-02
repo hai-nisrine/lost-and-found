@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Report an item — Lost & Found</title>
+</head>
+<body>
+
+    <nav class="site-nav">
+        <span class="brand">Lost & Found</span>
+        <div class="nav-links" style="margin-left:auto;">
+            <a href="browse.html">← Back to browse</a>
+        </div>
+    </nav>
+
+    <main style="max-width:480px;">
+        <h1>Report an item</h1>
+        <p>Fill in the details below. The more specific, the easier it is to match.</p>
+
+        <form class="auth-container" id="post-form" style="text-align:left;">
+            <div class="form-group">
+                <label>Type</label>
+                <div class="type-toggle">
+                    <label><input type="radio" name="post_type" value="lost" checked> Lost</label>
+                    <label><input type="radio" name="post_type" value="found"> Found</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="post_title" class="form-input" placeholder="e.g. Blue backpack" required>
+            </div>
+
+            <div class="form-group">
+                <label for="desc">Description</label>
+                <textarea id="desc" name="post_desc" class="form-input" placeholder="Where and when, distinguishing details..." required></textarea>
+            </div>
+
+            <button type="submit" id="login-btn">Submit report</button>
+        </form>
+    </main>
+
+    <script>
+        const API_BASE = 'http://localhost:5050'
+
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault()
+
+            const formData = new FormData(e.target)
+            const payload = Object.fromEntries(formData)
+
+            // Temporary: hardcoded until auth/login is built.
+            // Later this comes from the logged-in user's session, not a fixed value.
+            payload.user_id = 1
+
+            await fetch(`${API_BASE}/api/posts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+
+            //window.location.href = 'browse.html'
+        })
+    </script>
+</body>
+</html>

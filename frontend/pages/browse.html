@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Browse — Lost & Found</title>
+</head>
+<body>
+
+    <nav class="site-nav">
+        <span class="brand">Lost & Found</span>
+        <form class="search-form" id="search-form">
+            <input type="search" id="search-input" placeholder="Search items...">
+        </form>
+        <div class="nav-links">
+            <a href="create-post.html" class="btn">+ Report item</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="page-header">
+            <div>
+                <h1>Browse items</h1>
+                <p>Lost or found something on campus? Search below or report a new item.</p>
+            </div>
+        </div>
+
+        <div class="filters">
+            <select id="type-select">
+                <option value="">All types</option>
+                <option value="lost">Lost</option>
+                <option value="found">Found</option>
+            </select>
+        </div>
+
+        <div class="post-grid" id="posts-container"></div>
+    </main>
+
+    <script>
+        const API_BASE = 'http://localhost:5050'
+
+        // ===== Post Fetching =====
+        async function getPosts() {
+            const res = await fetch(`${API_BASE}/api/posts`)
+            return await res.json()
+        }
+
+        // ===== Post Rendering =====
+        function renderPosts(posts) {
+            const container = document.getElementById('posts-container')
+
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="empty-state"><p>No items posted yet.</p></div>`
+                return
+            }
+
+            const cards = posts.map((post) => {
+                return `
+                    <a href="post-detail.html?id=${post.post_id}" style="text-decoration:none;">
+                        <div class="post-card">
+                            <img src="https://placehold.co/400x300" alt="${post.post_title}">
+                            <div class="post-body">
+                                <span class="tag tag-${post.post_type}">${post.post_type}</span>
+                                <h3>${post.post_title}</h3>
+                                <p class="post-desc">${post.post_desc || ''}</p>
+                            </div>
+                        </div>
+                    </a>
+                `
+            }).join('')
+
+            container.innerHTML = cards
+        }
+
+        // ===== Init =====
+        async function init() {
+            const posts = await getPosts()
+            renderPosts(posts)
+        }
+        init()
+
+        document.getElementById('search-form').addEventListener('submit', (e) => {
+            e.preventDefault()
+            // applySearchFilter() — build once /api/posts supports a search query param
+        })
+    </script>
+</body>
+</html>
