@@ -39,10 +39,6 @@ export async function signup(req, res) {
         })
 
 
-
-
-
-
     } catch (err) {
         console.error(err)
         res.status(500).json({
@@ -57,6 +53,68 @@ export async function signup(req, res) {
 
 
 
+
+
+
+}
+
+
+export async function login(req, res) {
+
+    //reads email and password from req.body
+    //validates both exists (theyre both filled)
+    //find the user by email
+    //compare password to hashed
+    //sign a token
+    //send back user + token
+
+    try {
+
+    const {email, password}  = req.body
+    if (!email || !password) {
+        return res.status(400).json({
+            error: "Email and password are required"
+        })
+    }
+
+    const existingUser = await findUserByEmail(email)
+
+    if (!existingUser) {
+        return res.status(401).json({
+            error: "Invalid email or password"
+        })
+    } 
+        const storedHash = existingUser.user_password
+        const match = await bcrypt.compare(password, storedHash)
+        if (!match) {
+            return res.status(401).json({
+                error: "Invalid email or password"
+            })
+        }
+
+    const token = jwt.sign(
+        { userId: existingUser.user_id},
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN}
+    )
+
+    return res.status(200).json(
+        {
+         user: {  userId: existingUser.user_id,
+            userName: existingUser.user_name,
+            userEmail: existingUser.user_email
+        },
+        
+        token
+    }
+    )
+
+} catch (err) {
+    console.error(err)
+    res.status(500).json({
+        error: "Something went wrong"
+    })
+}
 
 
 
